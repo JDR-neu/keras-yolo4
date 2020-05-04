@@ -46,6 +46,15 @@ class Yolo4(object):
             map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)),
                 self.colors))
 
+        np.random.seed(0)  # Fixed seed for consistent colors across runs.
+        for i in range(len(self.colors)):
+            self.colors[i] = tuple(np.random.choice(range(256), size=3))
+        # np.random.shuffle(self.colors)  # Shuffle colors to decorrelate adjacent classes.
+        np.random.seed(None)  # Reset seed to default.
+
+        print self.colors
+
+
         self.sess = K.get_session()
 
         # Load model, or construct model and load weights.
@@ -107,6 +116,8 @@ class Yolo4(object):
             draw = ImageDraw.Draw(image)
             label_size = draw.textsize(label, font)
 
+            # print 'test:------------------', c, label, self.colors[c]
+
             top, left, bottom, right = box
             top = max(0, np.floor(top + 0.5).astype('int32'))
             left = max(0, np.floor(left + 0.5).astype('int32'))
@@ -146,16 +157,38 @@ if __name__ == '__main__':
 
     yolo4_model = Yolo4(score, iou, anchors_path, classes_path, model_path)
 
-    while True:
-        img = input('Input image filename:')
+    # while True:
+    #     img = input('Input image filename:')
+    #     print img
+    #     try:
+    #         image = Image.open(img)
+    #     except:
+    #         print('Open Error! Try again!')
+    #         continue
+    #     else:
+    #         print image
+    #         result = yolo4_model.detect_image(image, model_image_size=model_image_size)
+    #         plt.imshow(result)
+    #         plt.show()
+
+    path_dir = 'roboat/origin/'
+    bag_files = os.listdir(path_dir)
+    bag_files.sort()
+    for file_name in bag_files:
+        print file_name
         try:
-            image = Image.open(img)
+            image = Image.open(path_dir + file_name)
         except:
             print('Open Error! Try again!')
             continue
         else:
+            print image
             result = yolo4_model.detect_image(image, model_image_size=model_image_size)
-            plt.imshow(result)
-            plt.show()
+            # plt.imshow(result)
+            # plt.show()
+            # plt.draw()
+            # plt.pause(0.0001)
+            result.save('roboat/prediction/' + file_name)
+
 
     yolo4_model.close_session()
