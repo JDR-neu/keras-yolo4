@@ -37,3 +37,7 @@ python test.py
 ### Todo
 
 Debug train code with CIoU loss. Loss code from [https://github.com/david8862/keras-YOLOv3-model-set](https://github.com/david8862/keras-YOLOv3-model-set).
+
+### Weights ready to use
+
+[Google Drive](https://drive.google.com/open?id=1AHZz6USrlv_OJ-8242pavON_JjJna9tU)
