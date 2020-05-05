@@ -14,6 +14,7 @@ from timeit import default_timer as timer
 import matplotlib.pyplot as plt
 
 class Yolo4(object):
+    
     def get_class(self):
         classes_path = os.path.expanduser(self.classes_path)
         with open(classes_path) as f:
@@ -49,11 +50,7 @@ class Yolo4(object):
         np.random.seed(0)  # Fixed seed for consistent colors across runs.
         for i in range(len(self.colors)):
             self.colors[i] = tuple(np.random.choice(range(256), size=3))
-        # np.random.shuffle(self.colors)  # Shuffle colors to decorrelate adjacent classes.
         np.random.seed(None)  # Reset seed to default.
-
-        print self.colors
-
 
         self.sess = K.get_session()
 
@@ -146,7 +143,11 @@ class Yolo4(object):
         return image
 
 if __name__ == '__main__':
-    model_path = 'yolo4_weight.h5'
+
+    # model_path = 'yolo4_weight.h5'
+    model_path = '/home/tixiao/Documents/yolo4/yolo4_weight.h5'
+
+
     anchors_path = 'model_data/yolo4_anchors.txt'
     classes_path = 'model_data/coco_classes.txt'
 
@@ -157,38 +158,68 @@ if __name__ == '__main__':
 
     yolo4_model = Yolo4(score, iou, anchors_path, classes_path, model_path)
 
-    # while True:
-    #     img = input('Input image filename:')
-    #     print img
-    #     try:
-    #         image = Image.open(img)
-    #     except:
-    #         print('Open Error! Try again!')
-    #         continue
-    #     else:
-    #         print image
-    #         result = yolo4_model.detect_image(image, model_image_size=model_image_size)
-    #         plt.imshow(result)
-    #         plt.show()
-
-    path_dir = 'roboat/origin/'
-    bag_files = os.listdir(path_dir)
-    bag_files.sort()
-    for file_name in bag_files:
-        print file_name
+    # read a PNG
+    while True:
+        img = input('Input image filename:')
+        print img
         try:
-            image = Image.open(path_dir + file_name)
+            image = Image.open(img)
         except:
             print('Open Error! Try again!')
             continue
         else:
             print image
             result = yolo4_model.detect_image(image, model_image_size=model_image_size)
-            # plt.imshow(result)
-            # plt.show()
-            # plt.draw()
-            # plt.pause(0.0001)
-            result.save('roboat/prediction/' + file_name)
+            plt.imshow(result)
+            plt.show()
+
+    # read pictures in a folder
+    # path_dir = 'roboat/origin/'
+    # bag_files = os.listdir(path_dir)
+    # bag_files.sort()
+    # for file_name in bag_files:
+    #     print file_name
+    #     try:
+    #         image = Image.open(path_dir + file_name)
+    #     except:
+    #         print('Open Error! Try again!')
+    #         continue
+    #     else:
+    #         print image
+    #         result = yolo4_model.detect_image(image, model_image_size=model_image_size)
+    #         # plt.imshow(result)
+    #         # plt.show()
+    #         # plt.draw()
+    #         # plt.pause(0.0001)
+    #         result.save('roboat/prediction/' + file_name)
+
+    # read image from rosbag
+    # import cv2
+    # import rosbag
+    # from cv_bridge import CvBridge
+    # bridge = CvBridge()
+    # bag_name = '/media/tixiao/Storage/Roboat/2018-07-11-02-52-16.bag'
+    # image_topic = '/camera1/usb_cam1/image_raw/compressed'
+    # count = 0
+    # with rosbag.Bag(bag_name, 'r') as bag:
+    #     for topic, msg, t in bag.read_messages(topics=[image_topic]):
+    #         if topic == image_topic:
+    #             count = count + 1
+    #             if count % 30 != 0:
+    #                 continue
+    #             # print msg
+    #             # cv_img = bridge.imgmsg_to_cv2(msg)
+    #             cv_img = bridge.compressed_imgmsg_to_cv2(msg)
+    #             img = Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB))
+    #             result = yolo4_model.detect_image(img, model_image_size=model_image_size)
+    #             # plt.imshow(result)
+    #             # plt.show()
+    #             # plt.draw()
+    #             # plt.pause(0.0001)
+    #             filename = '{:010}'.format(count) + '.png'
+    #             print filename
+    #             result.save('/home/tixiao/Downloads/roboat/' + filename)
+
 
 
     yolo4_model.close_session()
