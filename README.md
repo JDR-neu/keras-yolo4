@@ -41,3 +41,12 @@ Debug train code with CIoU loss. Loss code from [https://github.com/david8862/ke
 ### Weights ready to use
 
 [Google Drive](https://drive.google.com/open?id=1AHZz6USrlv_OJ-8242pavON_JjJna9tU)
+
+
+### Demonstration
+
+<p align='center'>
+    <img src="demo.gif" alt="drawing" width="800"/>
+</p>
+
+[Video](https://youtu.be/BMlijfb4mCg)
